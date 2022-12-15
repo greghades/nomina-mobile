@@ -2,8 +2,10 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate
 from rest_framework import generics, status
 from rest_framework.response import Response
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
 
-from .serializers import UserSerializer, RegisterSerializer
+from .serializers import UserSerializer, RegisterSerializer,UserTokenSerializer
 from .messages.responses_ok import LOGIN_OK, SIGNUP_OK
 from .messages.responses_error import LOGIN_CREDENTIALS_REQUIRED_ERROR, LOGIN_CREDENTIALS_ERROR
 
@@ -16,16 +18,25 @@ class LoginView(generics.GenericAPIView):
     def post(self, request):
         email = request.data.get("email", None)
         password = request.data.get("password", None)
-
+    
         if email is None or password is None:
             return Response(LOGIN_CREDENTIALS_REQUIRED_ERROR, status=status.HTTP_400_BAD_REQUEST)
         else:
             user = authenticate(email = email, password = password)
-            if user is not None:
-                return Response( {
-                "user": UserSerializer(user, context = self.get_serializer_context()).data,
-                "message": LOGIN_OK
-            }, status=status.HTTP_200_OK)
+
+            if user.is_active:
+                token,create = Token.objects.get_or_create(user=user)
+                rspn = {
+                    "Token":token.key,
+                    "user": UserTokenSerializer(user, context = self.get_serializer_context()).data,
+                    "message": LOGIN_OK
+                }
+                if create:
+                    return Response( rspn, status=status.HTTP_200_OK)
+                else:
+                    token.delete()
+                    token = Token.objects.create(user=user)
+                    return Response( rspn, status=status.HTTP_200_OK)
             else:
                 return Response(LOGIN_CREDENTIALS_ERROR, status=status.HTTP_401_UNAUTHORIZED)
 
