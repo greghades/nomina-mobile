@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate
+from django.contrib.sessions.models import Session
+from datetime import datetime
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
@@ -39,6 +41,31 @@ class LoginView(generics.GenericAPIView):
                     return Response( rspn, status=status.HTTP_200_OK)
             else:
                 return Response(LOGIN_CREDENTIALS_ERROR, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class LogoutView(generics.GenericAPIView):
+    def get(self, request):
+        try:
+            token_r = request.GET.get('token')
+            token = Token.objects.all()
+            for tk in token:
+                print(tk)
+            if token:
+                user = token.user
+                all_sessions = Session.objects.filter(expired_date__gte=datetime.now())
+                if all_sessions.exists():
+                    for session in all_sessions:
+                        session_data = session.get_decoded()
+                        if user.id == int(session_data.get('_auth_user_id')):
+                            session.delete()
+                token.delete()
+                session_message = 'Sesiones de usuarios eliminados'
+                token_message = 'Token eliminado'
+                return Response({"token_msg":token_message,"Session_msg":session_message},status=status.HTTP_200_OK)
+            return Response({"Error":"Campos no encontrados"}, status=status.HTTP_400_BAD_REQUEST)
+        except:
+            return Response({"error:":"No se encuentra ningun usuario con esas credenciales"}, status=status.HTTP_409_CONFLICT)
+  
 
 class SignUpView(generics.GenericAPIView):
 
