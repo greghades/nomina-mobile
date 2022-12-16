@@ -28,3 +28,10 @@ Run this command to start the app.
 ```
 python manage.py runserver
 ```
+
+## Access to admin panel
+
+access the following urls and enter your credentials
+```
+http://127.0.0.1:8000/admin
+```
