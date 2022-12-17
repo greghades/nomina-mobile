@@ -10,7 +10,6 @@ class GetAllPayrollView(APIView):
     
     def get(self, request):
         queryset= Payroll.objects.all()
-        print(queryset)
         serializer= PayrollSerializer(queryset, many=True)
         serialized_data= serializer.data
         return Response(serialized_data, status.HTTP_200_OK)
