@@ -1,3 +1,5 @@
-LOGIN_CREDENTIALS_REQUIRED_ERROR = {"msg": "Error: Email y Password son campos requeridos"}
+LOGIN_CREDENTIALS_REQUIRED_ERROR = {"message": "Error: Email and Password are required fields"}
 
-LOGIN_CREDENTIALS_ERROR = {"msg": "Credenciales inválidas"}
+LOGIN_CREDENTIALS_ERROR = {"message": "invalid credentials"}
+
+LOGOUT_ERROR = {"Error":"Fields not found"}

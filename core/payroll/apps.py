@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class NominaConfig(AppConfig):
+class PayrollConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'nomina'
+    name = 'payroll'

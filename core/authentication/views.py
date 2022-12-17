@@ -10,11 +10,12 @@ from django.contrib.auth import logout
 
 from .models import CustomUser
 from .serializers import UserSerializer, RegisterSerializer,UserTokenSerializer
-from .messages.responses_ok import LOGIN_OK, SIGNUP_OK
-from .messages.responses_error import LOGIN_CREDENTIALS_REQUIRED_ERROR, LOGIN_CREDENTIALS_ERROR
+from .messages.responses_ok import LOGIN_OK, SIGNUP_OK,LOGOUT_OK
+from .messages.responses_error import LOGIN_CREDENTIALS_REQUIRED_ERROR, LOGIN_CREDENTIALS_ERROR,LOGOUT_ERROR
 
 # Create your views here.
 class LoginView(generics.GenericAPIView):
+    serializer_class = UserTokenSerializer
     def get(self, request):
         data_response = {"msg": "Método GET no permitido"}
         return Response(data_response, status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -47,19 +48,15 @@ class LoginView(generics.GenericAPIView):
 
 class LogoutView(generics.GenericAPIView):
     def post(self, request):
-        try:
-            token_request = request.POST['token']
-            token = Token.objects.filter(key=token_request).first()
-            if token:
-                user = CustomUser.objects.filter(auth_token=token).first()
-                user.auth_token.delete()
-                logout(request)
-                session_message = 'Sesiones de usuarios eliminados'
-                token_message = 'Token eliminado'
-                return Response({"token_msg":token_message,"Session_msg":session_message},status=status.HTTP_200_OK)
-            return Response({"Error":"Campos no encontrados"}, status=status.HTTP_400_BAD_REQUEST)      
-        except:
-            return Response({"Error:":"No se encuentra ningun usuario con esas credenciales"}, status=status.HTTP_409_CONFLICT)
+        token_request = request.POST.get('token', False)
+        token = Token.objects.get(key=token_request)
+        if token:
+            user = CustomUser.objects.get(auth_token=token)
+            user.auth_token.delete()
+            logout(request)
+            
+            return Response({"message":LOGOUT_OK},status=status.HTTP_200_OK)
+        return Response({"message":LOGOUT_ERROR}, status=status.HTTP_400_BAD_REQUEST)      
 
 class SignUpView(generics.GenericAPIView):
 

@@ -8,7 +8,7 @@ class CustomUserAdmin(UserAdmin, admin.ModelAdmin):
     list_display = ('id', "first_name", "last_name", "email", "date_joined")
     fieldsets = (
       ('Employee info', {
-          'fields': ('username','email','password','name','last_name','code_employee','ine','rfc','nss','status','date_start')
+          'fields': ('username','email','password','name','last_name','code_employee','ine','rfc','nss','status','date_start','rol')
       }),
    )
 

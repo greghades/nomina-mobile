@@ -1,4 +1,5 @@
 from django.contrib import admin
-from .models import Nomina
+from .models import Payroll
 # Register your models here.
-admin.site.register(Nomina)
+
+admin.site.register(Payroll)
