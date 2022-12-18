@@ -16,8 +16,11 @@ class GetAllPayrollView(APIView):
 class GetDetailPayrollView(APIView):
 
       def get(self, request, pk):
-        payroll= Payroll.objects.get(id=pk)
-        serializer = PayrollSerializer(payroll, many=False)
-        # if serializer.is_valid():
-        #     serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        payroll= Payroll.objects.filter(id=pk).first()
+        if payroll:
+            serializer = PayrollSerializer(payroll, many=False)
+            # if serializer.is_valid():
+            #     serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response({"message":"No se ha encontrado el usuario"}, status=status.HTTP_400_BAD_REQUEST)
