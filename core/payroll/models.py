@@ -3,7 +3,7 @@ from authentication.models import CustomUser
 
 # Create your models here.
 class Payroll(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.PROTECT) 
+    user = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL) 
     payment_date = models.DateField(null=False, blank=False)
 
     def __str__(self):

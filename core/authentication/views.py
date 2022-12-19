@@ -10,7 +10,7 @@ from django.contrib.auth import logout
 
 from .models import CustomUser
 from .serializers import UserSerializer, RegisterSerializer,UserTokenSerializer,LoginSerializer
-from .messages.responses_ok import LOGIN_OK, SIGNUP_OK,LOGOUT_OK
+from .messages.responses_ok import LOGIN_OK, SIGNUP_OK,LOGOUT_OK, UPDATE_OK
 from .messages.responses_error import LOGIN_CREDENTIALS_REQUIRED_ERROR, LOGIN_CREDENTIALS_ERROR,LOGOUT_ERROR
 
 # Create your views here.
@@ -50,7 +50,8 @@ class LoginView(generics.GenericAPIView):
 class LogoutView(generics.GenericAPIView):
     
     def post(self, request):
-        token_request = request.POST.get('token', False)
+        token_request = request.data.get("Token", None)
+        print(token_request)
         token = Token.objects.get(key=token_request)
         if token:
             user = CustomUser.objects.get(auth_token=token)
@@ -75,5 +76,30 @@ class SignUpView(generics.GenericAPIView):
         )
 
 class UpdateUser(generics.RetrieveUpdateAPIView):
+    
     serializer_class = UserTokenSerializer
     queryset = CustomUser.objects.all()
+
+    def put(self, request, *args, **kwargs):
+
+        return Response({
+            'data':request.data,
+            'message':UPDATE_OK
+        })
+
+
+class ListUsers(generics.ListAPIView):
+    serializer_class = UserSerializer
+    queryset = CustomUser.objects.order_by('id')
+
+
+class DeleteView(generics.GenericAPIView):
+    
+
+    def delete(self, request, pk):
+        user= CustomUser.objects.get(id=pk)
+        if user:
+            user.delete()
+            return Response({"message":"Usuario eliminado exitosamente"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message":"Usuario no encontrato"}, status=status.HTTP_404_NOT_FOUND)

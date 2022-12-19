@@ -17,7 +17,7 @@ class LoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('email','password')
-
+    
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
