@@ -77,3 +77,13 @@ class SignUpView(generics.GenericAPIView):
 class UpdateUser(generics.RetrieveUpdateAPIView):
     serializer_class = UserTokenSerializer
     queryset = CustomUser.objects.all()
+class DeleteView(generics.GenericAPIView):
+    
+
+    def delete(self, request, pk):
+        user= CustomUser.objects.get(id=pk)
+        if user:
+            user.delete()
+            return Response({"message":"Usuario eliminado exitosamente"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message":"Usuario no encontrato"}, status=status.HTTP_404_NOT_FOUND)

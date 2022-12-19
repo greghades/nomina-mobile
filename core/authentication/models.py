@@ -10,7 +10,7 @@ class Roles(models.Model):
 
 class CustomUser(AbstractUser):
     username = models.CharField(max_length=100, unique=True, null=True, blank=True)
-    code_employee = models.CharField(max_length=15,null=False,unique=True)
+    code_employee = models.CharField(max_length=15,null=True)
     ine = models.CharField(max_length=20, null=False)
     rfc = models.CharField(max_length=15, null=False)
     nss = models.CharField(max_length=20, null=False)
