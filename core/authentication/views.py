@@ -92,3 +92,13 @@ class ListUsers(generics.ListAPIView):
     serializer_class = UserSerializer
     queryset = CustomUser.objects.order_by('id')
 
+
+class DeleteView(generics.GenericAPIView):
+    
+    def delete(self, request, pk):
+        user= CustomUser.objects.get(id=pk)
+        if user:
+            user.delete()
+            return Response({"message":"Usuario eliminado exitosamente"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message":"Usuario no encontrato"}, status=status.HTTP_404_NOT_FOUND)
