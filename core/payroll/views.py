@@ -1,15 +1,19 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from .models import Payroll
 from .serializers import PayrollSerializer
+
 # Create your views here.
 
 class GetAllPayrollView(APIView):
-    
-    def get(self, request):
-        queryset= Payroll.objects.all()
+   
+    def post(self, request):
+      
+        user_id = request.data.get("id", None)
+        queryset= Payroll.objects.filter(user=user_id)
         serializer= PayrollSerializer(queryset, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
 
