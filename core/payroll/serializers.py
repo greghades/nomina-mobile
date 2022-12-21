@@ -5,4 +5,4 @@ class PayrollSerializer(serializers.ModelSerializer):
     code_employee = serializers.CharField(source = 'user.code_employee')
     class Meta:
         model = Payroll
-        exclude = ('user', )
+        exclude = ('user', 'id')
