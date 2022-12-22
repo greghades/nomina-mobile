@@ -23,3 +23,4 @@ class GetAllPayrollView(APIView):
                 })
         
         return Response( rspn, status=status.HTTP_200_OK)
+

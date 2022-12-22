@@ -27,3 +27,8 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return f"{self.get_full_name()}"
+class CodesVerification(models.Model):
+    changePasswordCode = models.CharField(max_length=10,unique=True)
+    user = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL) 
+    def __str__(self):
+        return f"{self.user}"
