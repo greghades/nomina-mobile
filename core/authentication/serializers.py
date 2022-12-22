@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser
+from .models import CustomUser,CodesVerification
 
 
 
@@ -32,3 +32,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             first_name = validated_data['first_name'],
             last_name = validated_data['last_name'])
         return user
+
+class ValidateCodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CodesVerification
+        exclude = ('id',)

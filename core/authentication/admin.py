@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
-from .models import CustomUser,Roles
+from .models import CustomUser,CodesVerification
 
 # Register your models here.
 class CustomUserAdmin(UserAdmin, admin.ModelAdmin):
@@ -13,5 +13,5 @@ class CustomUserAdmin(UserAdmin, admin.ModelAdmin):
    )
 
 admin.site.register(CustomUser, CustomUserAdmin)
-admin.site.register(Roles)
+admin.site.register(CodesVerification)
 admin.site.unregister(Group)
