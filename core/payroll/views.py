@@ -15,9 +15,34 @@ class GetAllPayrollView(APIView):
     def post(self, request):
       
         user_id = request.data.get("id", None)
-        queryset= Payroll.objects.filter(user=user_id)
-        serializer= PayrollSerializer(queryset, many=True)
-        return Response(serializer.data, status.HTTP_200_OK)
+        user = CustomUser.objects.get(id=user_id)
+        payrolls = Payroll.objects.filter(user=user_id)
+        rspn = []
+        for payroll in  payrolls:
+           rspn.append( {
+                    'code_employee':user.code_employee,
+                    'payment_date':payroll.payment_date,
+                    'url_pdf':'http://3.95.16.122/static/nomina-mobile/payrolls' + '/'+user.code_employee+'/'+user.code_employee+'-'+str(payroll.payment_date)+'.pdf',
+                   
+                })
+        
+        return Response( rspn, status=status.HTTP_200_OK)
+
+        # queryset= Payroll.objects.filter(user=user_id)
+        # serializer= PayrollSerializer(queryset, many=True)
+        # print(user)
+
+        # user = CustomUser.objects.get(code_employee=code_employee)
+        # payroll = Payroll.objects.filter(user=user.id,payment_date=payment_date).first()
+            
+    
+        # rspn = {
+        #         'url_pdf':'http://3.95.16.122/static/nomina-mobile/payrolls' + '/'+user.code_employee+'/'+user.code_employee+'-'+str(payroll.payment_date)+'.pdf',
+                   
+        # }
+        # return Response( rspn, status=status.HTTP_200_OK)
+
+        # return Response(serializer.data, status.HTTP_200_OK)
 
 class GetDetailPayrollView(APIView):
 
@@ -46,7 +71,7 @@ class DownloadPayrollPdf(generics.GenericAPIView):
             
     
             rspn = {
-                   'url_pdf':STATIC_ROOT + '/'+user.code_employee+'/'+user.code_employee+'-'+str(payroll.payment_date)+'.pdf',
+                   'url_pdf':'http://3.95.16.122/static/nomina-mobile/payrolls' + '/'+user.code_employee+'/'+user.code_employee+'-'+str(payroll.payment_date)+'.pdf',
                    
             }
             return Response( rspn, status=status.HTTP_200_OK)
